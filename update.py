@@ -49,7 +49,7 @@ print("Updating Lambda function...")
 
 
 subprocess.run(
-    ['aws', 'lambda', 'update-function-code', '--function-name', 'ServerApp', '--zip-file', f'fileb://{zip_filename}'],
+    ['aws', 'lambda', 'update-function-code', '--function-name', 'Server', '--zip-file', f'fileb://{zip_filename}'],
     stdout=subprocess.DEVNULL,
     stderr=subprocess.DEVNULL
 )
