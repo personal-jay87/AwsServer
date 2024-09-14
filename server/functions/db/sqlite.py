@@ -10,6 +10,13 @@ def execute_query(request: JRequest):
     try:
         body = request.get_json()
         query = body["query"]
+        
+        if("database" in body):
+            database = body["database"]
+            database = sql.DataBase(database)
+        else:
+            database = mySampleDb
+            
         if("|" in query):
             query = query.split("|")
             result = mySampleDb.execute(query[0],query[1])
@@ -25,3 +32,5 @@ def execute_query(request: JRequest):
             "err":str(e),
             "traceback": traceback.format_exc()
         }
+        
+        

@@ -5,6 +5,7 @@ import json
 import os
 
 # print(os.API_Dict)
+os.makedirs("/mnt/efs/database", exist_ok=True)
 
 
 def isApiPathExist(root_path):
@@ -132,14 +133,22 @@ def run_api(method: str,path: str,headers: dict,body,query_params: dict):
 
 # Check if /mnt/efs exists (if not, consider running locally)
 if isRunningOnLocal():
-    os.makedirs("/mnt/efs", exist_ok=True)
     import os, fastapi, uvicorn, typing
     app = fastapi.FastAPI()
+    from fastapi.middleware.cors import CORSMiddleware
+    
+    # Allow all origins
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],  # Allows all origins
+        allow_credentials=True,
+        allow_methods=["*"],  # Allows all methods
+        allow_headers=["*"],  # Allows all headers
+    )
 
     # Accept all HTTP methods
     @app.api_route("/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"])
     async def dynamic_route(path: str, request: fastapi.Request):
-        print(path)
         method = request.method
         body = (await request.body()).decode('utf-8') if method == 'POST' else ''
         headers: typing.Dict[str, str] = dict(request.headers)

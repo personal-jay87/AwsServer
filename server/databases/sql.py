@@ -111,7 +111,7 @@ class Query:
 class DataBase:
     def __init__(self, dataBaseName: str) -> None:
         self.dataBaseName = dataBaseName
-        self.rootPath = "/mnt/efs/"
+        self.rootPath = "/mnt/efs/database/"
         self.dataBasePath = os.path.join(self.rootPath, f"{self.dataBaseName}.db")
 
     def query(self, table_name: str) -> Query:

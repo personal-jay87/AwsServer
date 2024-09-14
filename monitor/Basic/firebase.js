@@ -10,7 +10,7 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = firebase.initializeApp(firebaseConfig);
+// const app = firebase.initializeApp(firebaseConfig);
 // const db = firebase.firestore();
 // const rdb = firebase.database();
 
@@ -22,6 +22,48 @@ const app = firebase.initializeApp(firebaseConfig);
 //     ref.child(childData.mid).remove();
 //   });
 // }
+
+
+async function apiCall(path, body) {
+  let full_url = "";
+  if(isLive){
+    full_url = DB_URL_Live + "/" + path;
+  } else {
+    full_url = DB_URL_Local + "/" + path;
+  }
+  const url = full_url;
+  const headers = {
+    "Content-Type": "application/json",
+  };
+  if (body == undefined) {
+    var response = await fetch(url, {
+      method: "GET",
+      headers: headers,
+    });
+    const responseBody = await response.text();
+    try {
+      // Attempt to parse the response body as JSON
+      return JSON.parse(responseBody);
+    } catch (error) {
+      // Handle JSON parsing error or return the response body as is
+      return responseBody;
+    }
+  } else {
+    var response = await fetch(url, {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify(body),
+    });
+    const responseBody = await response.text();
+    try {
+      // Attempt to parse the response body as JSON
+      return JSON.parse(responseBody);
+    } catch (error) {
+      // Handle JSON parsing error or return the response body as is
+      return responseBody;
+    }
+  }
+}
 
 async function fetchAWS(path, body) {
   const url = DB_URL + "/" + path;

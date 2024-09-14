@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>File Manager</title>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../Basic/basics.css">
+  <style>
+    body {
+      font-family: 'Google Sans', sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #eee;
+      overflow: hidden;
+      background-color: #111;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 5px;
+      background: #222;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .title {
+      margin-left: 30px;
+      font-size: 24px;
+      color: #26c6da;
+    }
+
+    .file-list-container {
+      height: calc(100vh - 80px);
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .file-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #222;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: background-color 0.3s, transform 0.3s;
+    }
+
+    .file-item:hover {
+      background-color: #333;
+      transform: scale(1.02);
+    }
+
+    .file-name {
+      padding-left: 10px;
+      color: #26c6da;
+      font-size: 18px;
+    }
+
+    .file-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .file-action-button {
+      background-color: #4285F4;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.3s;
+    }
+
+    .file-action-button:hover {
+      background-color: #357ae8;
+      transform: scale(1.05);
+    }
+
+    .file-action-button.delete {
+      background-color: #e74c3c;
+    }
+
+    .file-action-button.delete:hover {
+      background-color: #c0392b;
+    }
+
+    .button-containerSignOutButton {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+    }
+
+    .google-signout-button {
+      background-color: #4285F4;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'Google Sans', sans-serif;
+      transition: background-color 0.3s, transform 0.3s;
+    }
+
+    .google-signout-button:hover {
+      background-color: #357ae8;
+      transform: scale(1.05);
+    }
+
+    .google-signout-button .google-logo {
+      width: 30px;
+      height: 30px;
+    }
+
+    .no-files-message {
+      color: #bbb;
+      text-align: center;
+      margin-top: 50px;
+      font-size: 18px;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <div class="title">File Manager</div>
+    
+    <div class="button-containerSignOutButton">
+        <button id="uploadFile" class="google-signout-button">
+          <img id="upload_image" alt="Upload Icon" class="google-logo" src="../../Images/upload.png">
+          Upload File
+        </button>
+    </div>
+  </div>
+  
+  <div class="file-list-container" id="fileList">
+    <!-- Repeat .file-item div for more files -->
+  </div>
+  
+  <div class="no-files-message" id="noFilesMessage">No files available.</div>
+
+</body>
+<script src="../../Basic/init.js"></script>
+</html>
