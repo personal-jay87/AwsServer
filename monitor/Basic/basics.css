@@ -1,0 +1,441 @@
+body {
+	font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande","Lucida Sans", Arial, sans-serif;
+	margin: 0;
+	padding: 0;
+	background-color: #f2f2f2;
+}
+
+.toast {
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
+  position: fixed;
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  align-items: center;
+  padding: 12px 24px;
+  background-color: lightskyblue;
+  color: black;
+  border-radius: 50px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  /* font-family: 'Roboto', sans-serif; */
+  font-size: 18px;
+  line-height: 1.4;
+  opacity: 0;
+	z-index: 1000;
+}
+
+/* Define keyframe animations */
+@keyframes slideIn {
+  from {
+    /* bottom: -100%; Start position */
+    opacity: 0; /* Start opacity */
+  }
+  to {
+    /* bottom: 0; End position */
+    opacity: 1; /* End opacity */
+  }
+}
+
+@keyframes slideOut {
+  from {
+    /* bottom: 0; Start position */
+    opacity: 1; /* Start opacity */
+  }
+  to {
+    /* bottom: -100%; End position */
+    opacity: 0; /* End opacity */
+  }
+}
+
+/* Apply animations based on class */
+.toast.slide-in {
+  animation: slideIn 0.3s ease forwards;
+}
+
+.toast.slide-out {
+  animation: slideOut 1s ease forwards;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 997;
+  backdrop-filter: blur(5px);
+}
+
+.dialog {
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #b8daff;
+  border-radius: 20px;
+  padding: 20px;
+  text-align: center;
+  z-index: 998;
+  opacity: 0;
+  animation: fade-in 0.3s ease forwards;
+	/* z-index: 998; */
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.dialog h2 {
+  color: #007bff;
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.dialog p {
+  color: #333;
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+
+
+/* Normal buttons */
+
+.buttons {
+  display: flex;
+  justify-content: center;
+}
+
+.buttons :hover {
+  background-color: black;
+  color: white;
+  -webkit-transition-duration: 0.5s;
+}
+
+button {
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
+  background-color: white;
+  color: black;
+  margin: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  -webkit-transition-duration: 0.5s;
+}
+
+button.deleteButton {
+  background-color: #007bff;
+  color: white;
+}
+
+button.cancelButton {
+  background-color: #e9ecef;
+  color: #333;
+}
+
+button.addButton {
+  background-color: white;
+  color: black;
+}
+
+button.addButton:hover {
+  background-color: #6f42c1;
+  color: white;
+}
+
+.dialog .buttons {
+  display: flex;
+  justify-content: center;
+}
+
+.dialog .buttons :hover {
+  background-color: black;
+  color: white;
+  -webkit-transition-duration: 0.5s;
+}
+
+.dialog button {
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
+  background-color: white;
+  color: black;
+  margin: 0 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  -webkit-transition-duration: 0.5s;
+}
+
+.dialog button.deleteButton {
+  background-color: #007bff;
+  color: white;
+}
+
+.dialog button.cancelButton {
+  background-color: #e9ecef;
+  color: #333;
+}
+
+
+#BackButton {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 10;
+}
+
+
+
+
+
+
+/* loading */
+.loaderContainer {
+	display: none;
+	z-index: 999;
+}
+
+.loader {
+  position: absolute;
+  top: calc(50% - 32px);
+  left: calc(50% - 32px);
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  perspective: 800px;
+}
+
+.loader .inner {
+  position: absolute;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.loader .inner.one {
+  left: 0%;
+  top: 0%;
+  animation: rotate-one 0.7s linear infinite;
+  border-bottom: 3px solid skyblue;
+}
+
+.loader .inner.two {
+  right: 0%;
+  top: 0%;
+  animation: rotate-two 0.7s linear infinite;
+  border-right: 3px solid skyblue;
+}
+
+.loader .inner.three {
+  right: 0%;
+  bottom: 0%;
+  animation: rotate-three 0.7s linear infinite;
+  border-top: 3px solid skyblue;
+}
+
+@keyframes rotate-one {
+  0% {
+    transform: rotateX(35deg) rotateY(-45deg) rotateZ(0deg);
+  }
+  100% {
+    transform: rotateX(35deg) rotateY(-45deg) rotateZ(360deg);
+  }
+}
+
+@keyframes rotate-two {
+  0% {
+    transform: rotateX(50deg) rotateY(10deg) rotateZ(0deg);
+  }
+  100% {
+    transform: rotateX(50deg) rotateY(10deg) rotateZ(360deg);
+  }
+}
+
+@keyframes rotate-three {
+  0% {
+    transform: rotateX(35deg) rotateY(55deg) rotateZ(0deg);
+  }
+  100% {
+    transform: rotateX(35deg) rotateY(55deg) rotateZ(360deg);
+  }
+}
+
+
+.inp {
+  position: relative;
+  margin: auto;
+  width: 100%;
+  height: 30%;
+  max-width: 100px;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 20px;
+}
+
+.inp .label {
+  position: absolute;
+  width: 0%;
+  top: 0px;
+  left: 12px;
+  white-space: nowrap;
+  font-size: 16px;
+  color: rgba(0, 0, 0, 0.5);
+  font-weight: 500;
+  transform-origin: 0 0;
+  transform: translate3d(0, 0, 0);
+  transition: all 0.2s ease;
+  pointer-events: none;
+}
+
+.inp .focus-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.05);
+  z-index: -1;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.2s ease;
+}
+
+.inp input,
+.inp select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 100%;
+  border: 0;
+  font-family: inherit;
+  padding: 10px 12px 0 12px;
+  height: 45px;
+  font-size: 16px;
+  font-weight: 400;
+  background: rgba(0, 0, 0, 0.02);
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+  color: #000;
+  transition: all 0.15s ease;
+}
+
+.inp input:hover,
+.inp select:hover {
+  background: rgba(0, 0, 0, 0.04);
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.5);
+}
+
+.inp input:not(:placeholder-shown)+.label,
+.inp select:not(:placeholder-shown)+.label,
+.inp input:focus+.label,
+.inp select:focus+.label {
+  color: #0077FF;
+  transform: translate3d(0, -18px, 0) scale(0.75);
+}
+
+.inp input:focus+.label+.focus-bg,
+.inp select:focus+.label+.focus-bg {
+  transform: scaleX(1);
+}
+
+/* Add these styles to handle the date input */
+.inp input[type="date"]::-webkit-calendar-picker-indicator {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: auto;
+  height: auto;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Style for the date picker dropdown */
+.inp input[type="date"]::-webkit-datetime-edit-text {
+  padding: 10px 12px 0 12px;
+  height: 45px;
+  font-size: 16px;
+  font-weight: 400;
+  background: rgba(0, 0, 0, 0.02);
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+  color: #000;
+  transition: all 0.15s ease;
+}
+
+.inp input[type="date"]:hover::-webkit-datetime-edit-text {
+  background: rgba(0, 0, 0, 0.04);
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.5);
+}
+
+.inp input[type="date"]:not(:placeholder-shown)+.label,
+.inp input[type="date"]:focus+.label {
+  color: #0077FF;
+  transform: translate3d(0, -12px, 0) scale(0.75);
+}
+
+.inp input[type="date"]:focus+.label+.focus-bg {
+  transform: scaleX(1);
+}
+
+
+.inp textarea {
+  width: 99%;
+  border: 0;
+  font-family: inherit;
+  font-size: 18px;
+  font-weight: 400;
+  margin-bottom: -10px;
+  background: rgba(0, 0, 0, 0.02);
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+  color: #000;
+  transition: all 0.15s ease;
+  resize: vertical;
+  /* Allow vertical resizing of the textarea */
+}
+
+.inp textarea:hover {
+  background: rgba(0, 0, 0, 0.04);
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.5);
+}
+
+/* Adjust label position and scale for non-empty textarea */
+.inp textarea:not(:placeholder-shown)+.label {
+  color: black;
+  transform: translate3d(0, 30px, 0) scale(0.75);
+  transition: transform 0.2s ease;
+}
+
+/* Adjust label position and scale when textarea is focused */
+.inp textarea:focus+.label {
+  color: black;
+  transform: translate3d(0, 30px, 0) scale(0.75);
+}
+
+/* Adjust focus background scale for focused textarea */
+.inp textarea:focus+.label+.focus-bg {
+  transform: scaleX(1);
+}
+
+
+
+.dialog .inp input {
+  width: 80%;
+
+}

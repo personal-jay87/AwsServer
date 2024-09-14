@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Query Interface</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #1e1e1e;
+            color: #e0e0e0;
+        }
+        header {
+            background-color: #333;
+            color: #e0e0e0;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.5em;
+        }
+        .container {
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #444;
+            padding: 12px;
+        }
+        th {
+            background-color: #444;
+            color: #e0e0e0;
+        }
+        tr:nth-child(even) {
+            background-color: #2b2b2b;
+        }
+        tr:nth-child(odd) {
+            background-color: #1e1e1e;
+        }
+        input[type="text"], input[type="button"] {
+            margin-bottom: 20px;
+            padding: 10px;
+            width: calc(100% - 22px);
+            border: 1px solid #555;
+            background-color: #333;
+            color: #e0e0e0;
+            border-radius: 4px;
+        }
+        input[type="button"] {
+            width: auto;
+            cursor: pointer;
+            background-color: #1e90ff;
+            color: white;
+        }
+        input[type="button"]:hover {
+            background-color: #1c86ee;
+        }
+        .query-results {
+            display: none;
+            background-color: #333;
+            color: #e0e0e0;
+            padding: 10px;
+            border-radius: 4px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 100%;
+            overflow: auto;
+            white-space: pre-wrap;
+        }
+        a {
+            color: #1e90ff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        Database Query Interface
+    </header>
+    <div class="container">
+        <input type="text" id="sqlQuery" placeholder="Enter SQL query here...">
+        <input type="button" value="Execute Query" onclick="executeQuery()">
+        <div id="queryResults" class="query-results"></div>
+    </div>
+</body>
+<script>
+//    var domain = "place-holder-text:domain";
+    var domain = "http://localhost:8000/ServerApplication/db/sqlite/execute_query";
+
+    function executeQuery(){
+
+    }
+
+</script>
+</html>

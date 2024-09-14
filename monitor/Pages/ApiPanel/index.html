@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="../../Basic/basics.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Details</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #1e1e1e;
+            color: #e0e0e0;
+        }
+        header {
+            background-color: #333;
+            color: #e0e0e0;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.5em;
+        }
+        .container {
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #444;
+            padding: 12px;
+        }
+        th {
+            background-color: #444;
+            color: #e0e0e0;
+        }
+        tr:nth-child(even) {
+            background-color: #2b2b2b;
+        }
+        tr:nth-child(odd) {
+            background-color: #1e1e1e;
+        }
+        .get {
+            background-color: #22e62842;
+            color: white;
+        }
+        .post {
+            background-color: #cc271b46;
+            color: white;
+        }
+        input[type="text"] {
+            margin-bottom: 20px;
+            padding: 10px;
+            width: calc(100% - 22px);
+            border: 1px solid #555;
+            background-color: #333;
+            color: #e0e0e0;
+            border-radius: 4px;
+        }
+        .config-viewer {
+            display: none;
+            background-color: #333;
+            color: #e0e0e0;
+            padding: 10px;
+            border-radius: 4px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            position: absolute;
+            z-index: 1;
+            max-width: 500px;
+            overflow: auto;
+            white-space: pre-wrap;
+        }
+        .config-cell {
+            position: relative;
+            cursor: pointer;
+        }
+        .config-cell:hover .config-viewer {
+            display: block;
+        }
+        a {
+            color: #1e90ff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+    <script>
+        function searchApi() {
+            const input = document.getElementById("apiSearch").value.toLowerCase();
+            const rows = document.querySelectorAll(".api-row");
+            rows.forEach(row => {
+                const endpoint = row.querySelector(".api-endpoint").textContent.toLowerCase();
+                row.style.display = endpoint.includes(input) ? '' : 'none';
+            });
+        }
+    </script>
+</head>
+<body>
+    <h2>API Endpoints</h2>
+    <input type="text" id="apiSearch" onkeyup="searchApi()" placeholder="Search for API endpoints...">
+    <table>
+        <thead>
+            <tr>
+                <th>Endpoint</th>
+                <th>Method</th>
+                <th>Config</th>
+            </tr>
+        </thead>
+        <tbody id="apiTableBody">
+            <!-- API rows will be inserted here by the script -->
+        </tbody>
+    </table>
+</body>
+<script src="../../Basic/init.js"></script>
+</html>
+

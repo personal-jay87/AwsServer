@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile</title>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../Basic/basics.css">
+  <style>
+    body {
+      font-family: 'Google Sans', sans-serif;
+      margin: 0;
+      padding: 0;
+      /* background: linear-gradient(to bottom, #111, #333); */
+      color: #eee;
+      overflow-x: hidden;
+      background-color: #111;
+    }
+
+    .container {
+      margin-left: 200px;
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #222;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile {
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #333;
+      padding-bottom: 20px;
+      margin-bottom: 20px;
+    }
+
+    .profile img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      margin-right: 20px;
+      border: 3px solid #26c6da;
+    }
+
+    .profile h1 {
+      margin: 0;
+      font-size: 24px;
+      color: #26c6da;
+    }
+
+    .profile p {
+      margin: 5px 0;
+      color: #bbb;
+    }
+
+    
+
+    .button-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .button-containerSignOutButton {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+    }
+
+    .google-signout-button {
+      background-color: #4285F4;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'Google Sans', sans-serif;
+      transition: background-color 0.3s, transform 0.3s;
+    }
+
+    .google-signout-button:hover {
+      background-color: #357ae8;
+      transform: scale(1.05);
+    }
+
+    .google-signout-button .google-logo {
+      width: 30px;
+      height: 30px;
+    }
+
+    .tableCss table {
+      width: 100%;
+      background-color: #333;
+      table-layout: fixed;
+      margin: 10px 0;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .tableCss th,
+    .tableCss td {
+      padding: 12px;
+      white-space: nowrap;
+      color: #eee;
+    }
+
+    .tableCss th {
+      background-color: #0288d1;
+      color: white;
+    }
+
+    .tableCss tr:nth-child(even) {
+      background-color: #444;
+    }
+
+    .tableCss tr:hover {
+      background-color: #555;
+    }
+
+    .tableCss table thead {
+      position: sticky;
+      top: 0;
+      background-color: #222;
+    }
+
+    .features {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+}
+
+.feature {
+    background: #222;
+    border-radius: 15px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    margin: 10px;
+    padding: 30px;
+    flex: 1 1 calc(33% - 60px);
+    box-sizing: border-box;
+    text-align: center;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    font-size: 30px;
+}
+
+.featureSignOut{
+  font-size: 15px;
+  margin: 10px;
+  padding: 10px;
+}
+
+.feature::before {
+    content: '';
+    position: absolute;
+    top: -10%;
+    left: -100%;
+    width: 200%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: rotate(45deg);
+    transition: all 0.3s ease-in-out;
+    z-index: -1;
+}
+
+.feature:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
+}
+
+.feature:hover::before {
+    top: -100%;
+    left: -10%;
+}
+
+.feature h2 {
+    color: #26c6da;
+    margin-bottom: 15px;
+    font-size: 1.8em;
+    font-weight: 700;
+    background: linear-gradient(to right, #0288d1, #26c6da);
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+.feature p {
+    color: #bbb;
+    font-size: 1em;
+}
+
+@media (max-width: 768px) {
+    .feature {
+        flex: 1 1 calc(50% - 40px);
+    }
+}
+
+@media (max-width: 480px) {
+    .feature {
+        flex: 1 1 100%;
+    }
+}
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="profile">
+      <img id="profileImg" src="../../Images/profile.png" alt="Profile Picture">
+      <div>
+        <h1 id="Name">User Name</h1>
+        <p>Email: <span id="Email">loading@example.com</span></p>
+        <p>Last Login: <span id="LastLogin">...</span></p>
+      </div>
+      <div class="button-containerSignOutButton">
+        <button id="google-signout-button" class="google-signout-button feature featureSignOut">
+          <img id="google_image" alt="Google Logo" class="google-logo" src="../../Images/google.png">
+          Sign Out of Google
+        </button>
+      </div>
+    </div>
+    
+    
+
+    <div class="features">
+
+
+        
+      <div class="button-container">
+        <button id="google-signout-button" class="google-signout-button feature">
+          <img id="google_image" alt="Google Logo" class="google-logo" src="../../Images/python.png">
+          Deploy Python
+        </button>
+      </div>
+
+      <div class="button-container">
+        <button id="google-signout-button" class="google-signout-button feature">
+          <img id="google_image" alt="Google Logo" class="google-logo" src="../../Images/pyFunctions.png">
+          Hosted Functions
+        </button>
+      </div>
+
+      <div class="button-container">
+        <button id="google-signout-button" class="google-signout-button feature">
+          <img id="google_image" alt="Google Logo" class="google-logo" src="../../Images/insight.png">
+          Insights & Overall Usages
+        </button>
+      </div>
+
+      
+      
+    </div>
+
+
+    <h2>Hosted Python Files</h2>
+    <div class="tableCss">
+      <table>
+        <thead>
+          <tr>
+            <th>File Name</th>
+            <th>Uploaded On</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>example_script.py</td>
+            <td>2024-07-14</td>
+            <td>Active</td>
+          </tr>
+          <!-- More rows can be added here -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <script src="../../Basic/init.js"></script>
+</body>
+</html>
