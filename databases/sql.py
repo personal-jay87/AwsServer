@@ -116,13 +116,22 @@ class DataBase:
 
     def query(self, table_name: str) -> Query:
         return Query(self, table_name)
+    
+    def execute(self, query_string: str,params: str = None):
+        if(params is not None):
+            params = params.split(",")
+        return self.Query_executer(query_string,params)
 
     def Query_executer(self, query_string: str, params: Tuple) -> Union[int, List[Tuple], str]:
         conn = sqlite3.connect(self.dataBasePath)
         cursor = conn.cursor()
 
         try:
-            cursor.execute(query_string, params)
+            if(params is None):
+                cursor.execute(query_string)
+            else:
+                cursor.execute(query_string, params)
+                
             
             if query_string.strip().upper().startswith(('INSERT', 'UPDATE', 'DELETE', 'CREATE')):
                 conn.commit()
@@ -142,25 +151,3 @@ class DataBase:
         finally:
             cursor.close()
             conn.close()
-
-
-# Example usage:
-if __name__ == "__main__":
-    db = DataBase('test_db')
-
-    # Insert data
-    query = db.query('users').insert(name='Alice', age=30)
-    print(f'Rows inserted: {query.execute()}')
-
-    # Select data
-    query = db.query('users').select('name', 'age').where('age > 25').order_by('name').limit(10)
-    rows = query.execute()
-    print('Rows selected:', rows)
-
-    # Update data
-    query = db.query('users').update(name='Alice Smith').where('name = "Alice"')
-    print(f'Rows updated: {query.execute()}')
-
-    # Delete data
-    query = db.query('users').delete().where('name = "Alice Smith"')
-    print(f'Rows deleted: {query.execute()}')

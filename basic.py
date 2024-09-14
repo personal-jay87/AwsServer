@@ -33,8 +33,11 @@ class JRequest:
     def __repr__(self):
         return f"<JRequest method={self.method} path={self.path}>"
     
-    def get_header(self, name):
-        return self.headers.get(name)
+    def get_header(self, name: str):
+        val = self.headers.get(name)
+        if(val is None):
+            val = self.headers.get(name.lower())
+        return val
 
     def get_param(self):
         return self.query_params

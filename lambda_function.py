@@ -4,7 +4,7 @@ from basic import JRequest,JException
 import json
 import os
 
-print(os.API_Dict)
+# print(os.API_Dict)
 
 def getUrl(path):
     return "https://3py2admpd4.execute-api.ap-south-1.amazonaws.com/ServerApplication"+path
@@ -57,39 +57,44 @@ def apiDetails():
     }
 
 
+def isApiPathExist(root_path):
+    URLEndPoint = ""
+    temp = os.API_Dict
+    for rp in root_path:
+        URLEndPoint += "/" + rp
+        if(rp in temp):
+            temp = temp[rp]
+        else:
+            return False,URLEndPoint,None
+    
+    if("module_path" not in temp or "reference" not in temp or "method" not in temp):
+        return False,URLEndPoint,None
+    return True,URLEndPoint,temp
+
 def lambda_handler(event, context):
     # Extract headers, body, and HTTP method from the event
     path = event.get('path', '/')
-    if(path == "/apiDetails"):
-        return apiDetails()
-    
     headers = event.get('headers', {})
     body = event.get('body', b'')
+    method = event.get('httpMethod', 'GET')  # or 'POST', 'PUT', etc.
+    query_params = event.get('queryStringParameters', {})
+    
+    root_path = path.split("/")[1:]
+    path = ("/".join(root_path))
+    
+    return run_api(method,path,headers,body,query_params)
+
+def run_api(method: str,path: str,headers: dict,body,query_params: dict):
+    if(path == "apiDetails"):
+        return apiDetails()
     
     if(body != None and body != ""):
         try:
             body = json.loads(body)
         except:
             pass
-    method = event.get('httpMethod', 'GET')  # or 'POST', 'PUT', etc.
-    query_params = event.get('queryStringParameters', {})
-    
-    root_path = path.split("/")[1:]
-
-    isExist = True
-    temp = os.API_Dict    
-    URLEndPoint = ""
-    for rp in root_path:
-        URLEndPoint += "/" + rp
-        if(rp in temp):
-            temp = temp[rp]
-        else:
-            isExist = False
-            break
-    
-    if("module_path" not in temp or "reference" not in temp or "method" not in temp):
-        isExist = False
-    
+        
+    isExist,URLEndPoint,temp = isApiPathExist(path.split("/"))
     if(isExist):
         try:
             func = temp["reference"]
@@ -169,4 +174,42 @@ def lambda_handler(event, context):
                         "message":"Endpoint Not Found"
                     })
                 }
-    
+
+
+def isRunningOnLambda(): return "/var/task" == os.getcwd()
+def isRunningOnLocal(): return not isRunningOnLambda()
+
+os.isRunningOnLambda = isRunningOnLambda
+os.isRunningOnLocal = isRunningOnLocal
+
+# Check if /mnt/efs exists (if not, consider running locally)
+if isRunningOnLocal():
+    os.makedirs("/mnt/efs", exist_ok=True)
+    import os, fastapi, uvicorn, typing
+    app = fastapi.FastAPI()
+
+    # Accept all HTTP methods
+    @app.api_route("/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"])
+    async def dynamic_route(path: str, request: fastapi.Request):
+        print(path)
+        method = request.method
+        body = (await request.body()).decode('utf-8') if method == 'POST' else ''
+        headers: typing.Dict[str, str] = dict(request.headers)
+        query_params: typing.Dict[str, str] = dict(request.query_params)
+        
+        
+        root_path = path.split("/")[1:]
+        path = ("/".join(root_path))
+        
+        # Call the external run_api function to handle the request
+        response_content = run_api(method, path, headers, body, query_params)
+        response_header = response_content.get("headers", {})
+        response_code = response_content.get("statusCode", 200)
+        response_body = response_content.get("body", '')
+
+        # Return the response with appropriate status code and headers
+        return fastapi.Response(content=response_body, headers=response_header, status_code=response_code)
+
+    # Run the FastAPI app
+    if __name__ == "__main__":
+        uvicorn.run(app, host="0.0.0.0", port=8000, log_level="info")
