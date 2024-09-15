@@ -82,3 +82,129 @@ def list_files_folders_in_directory(directory_path):
 
     except Exception as e:
         return str(e)
+
+
+@Japi(config={"method": Method.POST})
+def read_file(request: JRequest):
+    try:
+        body = request.get_json()
+        file_path = '/mnt/efs' + body["file_path"]  # Ensure the file path is in the correct location
+
+        # Check if the file exists
+        if not os.path.isfile(file_path):
+            raise JException(f"File {file_path} not found.")
+        if not os.access(file_path, os.R_OK):
+            raise JException(f"File {file_path} is not readable.")
+
+        # Define human-readable extensions
+        human_readable_extensions = ['.txt', '.csv', '.json', '.xml', '.md', '.log', '.html']
+
+        # Get file extension
+        _, file_extension = os.path.splitext(file_path)
+
+        # Gather file metadata
+        item_stat = os.stat(file_path)
+        modified_date = datetime.fromtimestamp(item_stat.st_mtime).strftime('%Y-%m-%d %H:%M:%S')
+        file_info = {
+            "file_name": os.path.basename(file_path),
+            "size": item_stat.st_size,  # File size in bytes
+            "extension": file_extension,
+            "modified_date": modified_date,
+            "other_info": {
+                "creation_date": datetime.fromtimestamp(item_stat.st_ctime).strftime('%Y-%m-%d %H:%M:%S'),
+                "permissions": stat.filemode(item_stat.st_mode),
+                "owner": item_stat.st_uid,
+                "group": item_stat.st_gid,
+                "hard_links": item_stat.st_nlink,
+                "is_symlink": os.path.islink(file_path)
+            }
+        }
+
+        # If the file is human-readable, return the content with info
+        if file_extension in human_readable_extensions:
+            with open(file_path, 'r', encoding="utf-8", errors='ignore') as file:
+                content = file.read()
+
+            return {
+                "status": "success",
+                "readable": True,
+                "file_info": file_info,
+                "content": content
+            }
+        else:
+            # If the file is not human-readable, return file info only
+            return {
+                "status": "success",
+                "readable": False,
+                "file_info": file_info
+            }
+
+    except Exception as e:
+        return {
+            "status": "failed",
+            "err": str(e),
+            "traceback": traceback.format_exc()
+        }
+
+
+@Japi(config={"method": Method.POST})
+def delete_file(request: JRequest):
+    try:
+        body = request.get_json()
+        file_path = '/mnt/efs/' + body["file_path"]
+
+        # Check if the file exists
+        if not os.path.isfile(file_path):
+            raise JException(f"File {file_path} not found.")
+        if not os.access(file_path, os.W_OK):
+            raise JException(f"File {file_path} is not writable or cannot be deleted.")
+
+        # Delete the file
+        os.remove(file_path)
+
+        return {
+            "status": "success",
+            "message": f"File {body['file_path']} deleted successfully."
+        }
+
+    except Exception as e:
+        return {
+            "status": "failed",
+            "err": str(e),
+            "traceback": traceback.format_exc()
+        }
+
+
+@Japi(config={"method": Method.POST})
+def rename_file(request: JRequest):
+    try:
+        body = request.get_json()
+        old_file_path = '/mnt/efs' + body["old_file_path"]  # Old file path (e.g., "/folder/old_name.txt")
+        new_file_path = '/mnt/efs' + body["new_file_path"]  # New file path with updated name (e.g., "/folder/new_name.txt")
+
+        # Ensure both paths are within the same directory
+        old_directory = os.path.dirname(old_file_path)
+        new_directory = os.path.dirname(new_file_path)
+        
+        if old_directory != new_directory:
+            raise JException("Both the old and new file paths must be in the same directory.")
+
+        # Check if the old file exists
+        if not os.path.isfile(old_file_path):
+            raise JException(f"File {old_file_path} not found.")
+        if not os.access(old_file_path, os.W_OK):
+            raise JException(f"File {old_file_path} is not writable or cannot be renamed.")
+
+        # Rename the file
+        os.rename(old_file_path, new_file_path)
+
+        return {
+            "status": "success"
+        }
+
+    except Exception as e:
+        return {
+            "status": "failed",
+            "err": str(e),
+            "traceback": traceback.format_exc()
+        }

@@ -88,10 +88,16 @@ function attachClickListeners() {
 
 // Function to open a file (implement your logic here)
 function openFile(filePath) {
+  let temp_data_id = setTempPageData({
+    "filePath":filePath,
+  });
+
   console.log(`Opening file: ${filePath}`);
+
+
+  Navigate("FileView",true,{},{},"file_id="+temp_data_id);
   // Add your file opening logic (e.g., download or display)
 }
 
-isLive = true;
 // Initialize on page load
 init();

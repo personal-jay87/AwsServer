@@ -53,7 +53,7 @@ class JResponse:
                     'Content-Type': 'application/json'
                 }
             self.set_body_json(body)
-        
+        self.headers["Access-Control-Allow-Origin"] = '*' # Allow all origins
     
     def set_body_json(self,body):
         try:

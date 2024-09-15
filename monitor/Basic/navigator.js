@@ -18,6 +18,24 @@ function getCurrentPage() {
   return localStorage.CurrentlyAtPage;
 }
 
+function getRandomDigit() {
+  return Math.floor(100000 + Math.random() * 900000).toString();  // Generates a five-digit random number
+}
+
+function setTempPageData(data) {
+  let ran_id = getRandomDigit();
+  if (getMap(ran_id) == null) {  // Use isEmpty to check if getMap returns an empty object
+    storeMap(ran_id, data);
+    return ran_id;
+  } else {
+    return setTempPageData(data);  // Recursive call for a new ID if the ID already exists
+  }
+}
+
+function getTempPageData(id) {
+  return getMap(id);  // Retrieve data based on the ID
+}
+
 function Navigate(
   PageName,
   OpenInNewWindow,

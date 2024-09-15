@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deploy Python Code</title>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../Basic/basics.css">
+  <style>
+    body {
+      font-family: 'Google Sans', sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #eee;
+      overflow: hidden;
+      background-color: #111;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 5px;
+      background: #222;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .file-name {
+        margin-left: 30px;
+      font-size: 20px;
+      color: #26c6da;
+      cursor: pointer;
+    }
+
+    .deploy-button {
+      background-color: #4285F4;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'Google Sans', sans-serif;
+      transition: background-color 0.3s, transform 0.3s;
+    }
+
+    .deploy-button:hover {
+      background-color: #357ae8;
+      transform: scale(1.05);
+    }
+
+    .editor-container {
+      height: calc(100vh - 80px);
+    }
+
+    .editor {
+      height: 100%;
+    }
+
+
+
+
+    .button-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .button-containerSignOutButton {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+    }
+
+    .google-signout-button {
+      background-color: #4285F4;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'Google Sans', sans-serif;
+      transition: background-color 0.3s, transform 0.3s;
+    }
+
+    .google-signout-button:hover {
+      background-color: #357ae8;
+      transform: scale(1.05);
+    }
+
+    .google-signout-button .google-logo {
+      width: 30px;
+      height: 30px;
+    }
+
+    .features {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+}
+
+.feature {
+    background: #222;
+    border-radius: 15px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    margin: 10px;
+    padding: 30px;
+    flex: 1 1 calc(33% - 60px);
+    box-sizing: border-box;
+    text-align: center;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    font-size: 30px;
+}
+
+.featureSignOut{
+  font-size: 15px;
+  margin: 10px;
+  padding: 10px;
+}
+
+.feature::before {
+    content: '';
+    position: absolute;
+    top: -10%;
+    left: -100%;
+    width: 200%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: rotate(45deg);
+    transition: all 0.3s ease-in-out;
+    z-index: -1;
+}
+
+.feature:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
+}
+
+.feature:hover::before {
+    top: -100%;
+    left: -10%;
+}
+
+.feature h2 {
+    color: #26c6da;
+    margin-bottom: 15px;
+    font-size: 1.8em;
+    font-weight: 700;
+    background: linear-gradient(to right, #0288d1, #26c6da);
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+.feature p {
+    color: #bbb;
+    font-size: 1em;
+}
+
+@media (max-width: 768px) {
+    .feature {
+        flex: 1 1 calc(50% - 40px);
+    }
+}
+
+@media (max-width: 480px) {
+    .feature {
+        flex: 1 1 100%;
+    }
+}
+
+
+  </style>
+  <!-- Include the necessary libraries for the code editor -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.21.2/min/vs/editor/editor.main.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.21.2/min/vs/loader.min.js"></script>
+</head>
+<body>
+  <div class="top-bar">
+    <div class="file-name" id="fileName" contenteditable="true">...</div>
+    
+    <div class="button-containerSignOutButton">
+        <button id="deployNow" class="google-signout-button feature featureSignOut" >
+          <img id="google_image" alt="Google Logo" class="google-logo" src="../../Images/deploy.png">
+          SAVE FILE
+        </button>
+      </div>
+  </div>
+  <div class="editor-container">
+    <div id="editor" class="editor"></div>
+  </div>
+  <script src="../../Basic/init.js"></script>
+</body>
+</html>

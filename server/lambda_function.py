@@ -36,6 +36,22 @@ def lambda_handler(event, context):
     return run_api(method,path,headers,body,query_params)
 
 def run_api(method: str,path: str,headers: dict,body,query_params: dict):
+    # Handle OPTIONS requests for CORS
+    if method == "OPTIONS":
+        return {
+            'statusCode': 200,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',  # Allow all origins
+                'Access-Control-Allow-Methods': 'OPTIONS, GET, POST, PUT, DELETE',  # List of allowed methods
+                'Access-Control-Allow-Headers': 'Content-Type, Authorization',  # Allowed headers
+                'Access-Control-Allow-Credentials': 'true'
+            },
+            'body': json.dumps({
+                "message": "CORS pre-flight"
+            })
+        }
+        
     # if(path == "apiDetails"):
     #     return apiDetails()
     
@@ -70,7 +86,8 @@ def run_api(method: str,path: str,headers: dict,body,query_params: dict):
                         return {
                             'statusCode': 200,
                             'headers': {
-                                'Content-Type': 'application/json'
+                                'Content-Type': 'application/json',
+                                'Access-Control-Allow-Origin': '*',  # Allow all origins
                             },
                             'body': str(response)
                         }
@@ -78,7 +95,8 @@ def run_api(method: str,path: str,headers: dict,body,query_params: dict):
                     return {
                         'statusCode': e.StatusCode,
                         'headers': {
-                            'Content-Type': 'application/json'
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*',  # Allow all origins
                         },
                         'body': json.dumps(e.Response)
                     }
@@ -86,7 +104,8 @@ def run_api(method: str,path: str,headers: dict,body,query_params: dict):
                     return {
                         'statusCode': 500,
                         'headers': {
-                            'Content-Type': 'application/json'
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*',  # Allow all origins
                         },
                         'body': json.dumps({
                             "endpoint":URLEndPoint,
@@ -98,7 +117,8 @@ def run_api(method: str,path: str,headers: dict,body,query_params: dict):
                 return {
                     'statusCode': 405,
                     'headers': {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*',  # Allow all origins
                     },
                     'body': json.dumps({
                         "endpoint":URLEndPoint,
@@ -109,7 +129,8 @@ def run_api(method: str,path: str,headers: dict,body,query_params: dict):
             return {
                     'statusCode': 500,
                     'headers': {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*',  # Allow all origins
                     },
                     'body': json.dumps({
                         "endpoint":URLEndPoint,
@@ -121,7 +142,8 @@ def run_api(method: str,path: str,headers: dict,body,query_params: dict):
         return {
                     'statusCode': 404,
                     'headers': {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*',  # Allow all origins
                     },
                     'body': json.dumps({
                         "endpoint":URLEndPoint,
