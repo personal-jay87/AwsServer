@@ -1,26 +1,43 @@
 import traceback
-import functions
+
 from basic import *
 import json
 import os
 
-# print(os.API_Dict)
-os.makedirs("/mnt/efs/database", exist_ok=True)
+if(os.Load_All_APIs_At_Start == True):
+    import functions
+
+# print("APIs : ",os.API_Dict)
 
 
-def isApiPathExist(root_path):
-    URLEndPoint = ""
-    temp = os.API_Dict
-    for rp in root_path:
-        URLEndPoint += "/" + rp
-        if(rp in temp):
-            temp = temp[rp]
-        else:
-            return False,URLEndPoint,None
-    
-    if("module_path" not in temp or "reference" not in temp or "method" not in temp):
-        return False,URLEndPoint,None
-    return True,URLEndPoint,temp
+os.makedirs(os.DB_Path_SqlLite, exist_ok=True)
+
+def LoadSingleApi(root_path):
+    RequestedModuleRoot = ".".join(root_path[:-1])
+    import importlib
+    try:
+        importlib.import_module(f'functions.{RequestedModuleRoot}', package=root_path[-1])
+        return isApiPathExist(root_path,True)
+    except Exception as e:
+        return isApiPathExist(root_path,True)
+
+def isApiPathExist(root_path,flag_is_all_loaded):
+    if(flag_is_all_loaded == True):
+        URLEndPoint = ""
+        RequestedModuleRoot = ".".join(root_path[-1])
+        temp = os.API_Dict
+        for rp in root_path:
+            URLEndPoint += "/" + rp
+            if(rp in temp):
+                temp = temp[rp]
+            else:
+                return False,URLEndPoint,None,RequestedModuleRoot
+        if("module_path" not in temp or "reference" not in temp or "method" not in temp):
+            return False,URLEndPoint,None,RequestedModuleRoot
+        return True,URLEndPoint,temp,RequestedModuleRoot
+    else:
+        return LoadSingleApi(root_path)
+
 
 def lambda_handler(event, context):
     # Extract headers, body, and HTTP method from the event
@@ -61,12 +78,13 @@ def run_api(method: str,path: str,headers: dict,body,query_params: dict):
         except:
             pass
         
-    isExist,URLEndPoint,temp = isApiPathExist(path.split("/"))
+    isExist,URLEndPoint,temp,RequestedModuleRoot = isApiPathExist(path.split("/"),os.is_All_APIs_Loaded)
     if(isExist):
         try:
             func = temp["reference"]
             if(temp["method"].name == method):
                 try:
+                    # Code execution
                     response = func(JRequest(
                         method = method,
                         path = path,
@@ -89,7 +107,7 @@ def run_api(method: str,path: str,headers: dict,body,query_params: dict):
                                 'Content-Type': 'application/json',
                                 'Access-Control-Allow-Origin': '*',  # Allow all origins
                             },
-                            'body': str(response)
+                            'body': response
                         }
                 except JException as e:
                     return {
@@ -153,7 +171,6 @@ def run_api(method: str,path: str,headers: dict,body,query_params: dict):
 
 
 
-# Check if /mnt/efs exists (if not, consider running locally)
 if isRunningOnLocal():
     import os, fastapi, uvicorn, typing
     app = fastapi.FastAPI()
@@ -192,6 +209,6 @@ if isRunningOnLocal():
     # Run the FastAPI app
     if __name__ == "__main__":
         local_ip = "localhost"
-        local_port = 8000
-        os.BaseFunctionUrl = f"http://{local_ip}:{local_port}"
+        local_port = os.Fast_Api_Local_Default_Port
+        os.Function_BaseUrl = f"http://{local_ip}:{local_port}"
         uvicorn.run(app, host=local_ip, port=local_port, log_level="info")

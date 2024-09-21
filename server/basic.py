@@ -1,6 +1,59 @@
-import inspect,os,json
+import os,json,traceback
+
+class Config:
+    def __init__(self) -> None:
+        try:
+            config_file = open("config.json","r")
+            self.configs_txt = config_file.read()
+            config_file.close()
+            self.config = json.loads(self.configs_txt)
+            self.isLoaded = True
+        except Exception as e:
+            self.isLoaded = False
+            self.err = str(e)
+            self.traceback = traceback.format_exc()
+    
+    def getError(self):
+        return {
+            "err":self.err,
+            "traceback":self.traceback
+        }
+
+    def Attr(self,feild: str) -> dict:
+        return self.config.get(feild,{})
+
+
+# Load Configs
+try:
+    os.configuration
+except:
+    configuration = Config()
+
+if(not configuration.isLoaded):
+    print("Exception while loading the configs")
+    print(configuration.getError())
+    exit()
+
+# Assign Loaded config
+os.Load_All_APIs_At_Start = configuration.Attr("API")["Load_All_At_Start"]
+os.is_All_APIs_Loaded = os.Load_All_APIs_At_Start == True
+os.Fast_Api_Local_Default_Port = configuration.Attr("API")["Fast_Api_Local_Default_Port"]
+os.Function_BaseUrl = configuration.Attr("Function")["Base_Url"]
+os.Function_Endpoint = configuration.Attr("Function")["Endpoint"]
+os.DB_Path_SqlLite = configuration.Attr("Databases_Paths")["Sqlite"]
+os.Root_Path = configuration.Attr("Root")["Path"]
+try:
+    os.API_Dict
+except AttributeError as e:
+    os.API_Dict = {}
+
+print("Configuration : ",configuration.configs_txt)
+
+# Rest of the code
+import inspect
 from enum import Enum
 from functools import reduce
+
 
 
 class JException(Exception):
@@ -19,18 +72,15 @@ class Method(Enum):
     
 methods = [meth for meth in Method]
 
-os.BaseFunctionUrl = "https://8z0ymx6opk.execute-api.ap-south-1.amazonaws.com"
-
 def getBaseUrl(path):
-    return f"{os.BaseFunctionUrl}/ServerApplication{path}"
-
+    return f"{os.Function_BaseUrl}/{os.Function_Endpoint}{path}"
 def isRunningOnLambda():
     return "/var/task" == os.getcwd()
 def isRunningOnLocal():
     return not isRunningOnLambda()
 
 class JResponse:
-    def __init__(self,statusCode:int=200,headers=None,body=""):
+    def __init__(self,statusCode:int=200,body="",headers="json"):
         self.statusCode = statusCode
         self.body = body
         
@@ -141,6 +191,8 @@ def Japi(func=None, *, config=None):
             "method": method,
             "config": config
         }
+
+        # print("API",method,"/".join(module_path),func)
 
         return func
 

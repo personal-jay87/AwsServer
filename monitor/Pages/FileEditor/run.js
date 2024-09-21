@@ -15,7 +15,7 @@ fileNameElement.addEventListener("click", function () {
 fileNameElement.addEventListener("blur", function () {
   this.contentEditable = false;
   let text = this.innerText;
-  
+  renameFile(text);
 });
 
 fileNameElement.addEventListener("keydown", function (e) {
@@ -34,7 +34,9 @@ require.config({
   },
 });
 
-
+id("closeNow").onclick = async function () {
+  Navigate("Close");
+}
 
 id("deployNow").onclick = async function () {
   if (editorInstance) {
@@ -43,17 +45,18 @@ id("deployNow").onclick = async function () {
     // Implement your deployment logic here
     console.log("Saving");
     // console.log(code);
-    Toast("Saving...");
+    // Toast("Saving...");
     // You can use `code` variable here for further processing
-    var resp = await apiCall("monitor/filemanager/read_file", {
-      NAME: fileNameElement.innerText,
-      CODE: code,
+    var resp = await apiCall("monitor/filemanager/write_file", {
+      file_path: file_path,
+      content: code,
     });
 
-    if (resp.status == true) {
-      Dialog("Save Success","Done!",["Ok"]);
+    if (resp.status == "success") {
+      Toast("Save Success");
     } else {
-      Dialog("Problem While Saving",resp.message,["Ok"]);
+      let traceback = "\n\nTraceback : "+resp.traceback;
+      Toast("Problem While Saving : "+resp.err,5000);
     }
   } else {
     Toast("Editor not initialized yet.");
@@ -62,22 +65,47 @@ id("deployNow").onclick = async function () {
 
 
 const file_data = getTempPageData(PARAMS_PASSED["file_id"]);
-const file_path = file_data["filePath"];
+var file_path = file_data["filePath"];
+var file_name = file_path.split('/').pop();
+console.log(file_name)
+id("fileName").innerHTML = file_name;
 
 async function init(){
   var resp = await apiCall("monitor/filemanager/read_file", {
     file_path: file_path
   });
 
-
   const content = resp["content"];
-  const fileName = resp["file_info"]["file_name"];
+  file_name = resp["file_info"]["file_name"];
 
-  id("fileName").innerHTML = fileName;
-  
+  id("fileName").innerHTML = file_name;
   editorInstance.setValue(content);
 }
 
+async function renameFile(newFileName) {
+  var temp = file_path.split('/');
+  temp.pop();
+  temp.push(newFileName);
+  var new_file_path = temp.join('/');
+
+  var resp = await apiCall("monitor/filemanager/rename", {
+    old_file_path: file_path,
+    new_file_path: new_file_path,
+  });
+
+  file_path = new_file_path;
+
+  setTempPageData({
+    "filePath": file_path,
+  },PARAMS_PASSED["file_id"]);
+
+  if(resp.status == "success"){
+    Toast("Rename Success");
+  } else{
+    let traceback = "\n\nTraceback : "+resp.traceback;
+    Toast("Rename Failed : "+resp.err,5000);
+  }
+}
 
 
 
@@ -89,7 +117,5 @@ require(["vs/editor/editor.main"], function () {
     theme: "vs-dark",
     automaticLayout: true,
   });
-  setTimeout(function(){
-    init();
-  },1000);
+  init();
 });

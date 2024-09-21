@@ -22,14 +22,19 @@ function getRandomDigit() {
   return Math.floor(100000 + Math.random() * 900000).toString();  // Generates a five-digit random number
 }
 
-function setTempPageData(data) {
-  let ran_id = getRandomDigit();
-  if (getMap(ran_id) == null) {  // Use isEmpty to check if getMap returns an empty object
-    storeMap(ran_id, data);
-    return ran_id;
+function setTempPageData(data,id) {
+  if(id == undefined || id == null){
+    let ran_id = getRandomDigit();
+    if (getMap(ran_id) == null) {  // Use isEmpty to check if getMap returns an empty object
+      storeMap(ran_id, data);
+      return ran_id;
+    } else {
+      return setTempPageData(data);  // Recursive call for a new ID if the ID already exists
+    }
   } else {
-    return setTempPageData(data);  // Recursive call for a new ID if the ID already exists
+    storeMap(id, data);
   }
+  
 }
 
 function getTempPageData(id) {

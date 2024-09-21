@@ -42,4 +42,4 @@ def generate_html(api_dict):
 @Japi
 def details(request: JRequest):
     html_page = generate_html(os.API_Dict)
-    return JResponse(200,"html",html_page)
+    return JResponse(200,html_page,"html")

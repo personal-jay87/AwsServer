@@ -10,7 +10,7 @@ const Intent = parse(INTENT_SHARABLE);
 const DB_URL_Local = "http://localhost:8000/ServerApplication";
 const DB_URL_Live = "https://8z0ymx6opk.execute-api.ap-south-1.amazonaws.com/ServerApplication";
 
-var isLive = false;
+var isLive = true;
 DB_URL = DB_URL_Local;
 
 console.log("Server  : " + DB_URL);

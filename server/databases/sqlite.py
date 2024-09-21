@@ -52,11 +52,11 @@ class Query:
         self.order_by = f'ORDER BY {column} {direction}'
         return self
 
-    def limit(self, count: int) -> 'Query':
+    def setLimit(self, count: int) -> 'Query':
         self.limit = f'LIMIT {count}'
         return self
 
-    def offset(self, count: int) -> 'Query':
+    def setOffset(self, count: int) -> 'Query':
         self.offset = f'OFFSET {count}'
         return self
 
@@ -109,10 +109,18 @@ class Query:
 
 
 class DataBase:
-    def __init__(self, dataBaseName: str) -> None:
-        self.dataBaseName = dataBaseName
-        self.rootPath = "/mnt/efs/database/"
-        self.dataBasePath = os.path.join(self.rootPath, f"{self.dataBaseName}.db")
+    def __init__(self, dataBaseName: str, is_path_exact: bool = False) -> None:
+        if(not is_path_exact):
+            self.dataBaseName = dataBaseName
+            self.rootPath = os.DB_Path_SqlLite
+            self.dataBasePath = f"{self.rootPath}/{self.dataBaseName}.db"
+        else:
+            temp = dataBaseName.split("/")
+            db_path = "/".join(temp[:-1])
+            self.dataBaseName = temp[-1]
+            self.rootPath = f"{os.Root_Path}/{db_path}"
+            self.dataBasePath = f"{self.rootPath}/{self.dataBaseName}" # already have .db extention
+        
 
     def query(self, table_name: str) -> Query:
         return Query(self, table_name)
@@ -144,6 +152,12 @@ class DataBase:
             
             elif query_string.strip().upper().startswith('CREATE'):
                 return "Table created successfully"
+            
+            elif query_string.strip().upper().startswith('PRAGMA'):
+                return cursor.fetchall()
+            
+            else:
+                return cursor.fetchall()
         
         except sqlite3.Error as e:
             return f"An error occurred: {e}"

@@ -1,6 +1,6 @@
 from basic import Japi, Method, JRequest, JException
 import os,traceback
-import stat
+import stat,shutil
 from datetime import datetime
 
 @Japi(config={"method": Method.POST})
@@ -23,7 +23,7 @@ def get_dir_list(request: JRequest):
         }
 
 def list_files_folders_in_directory(directory_path):
-    directory_path = '/mnt/efs/' + directory_path
+    directory_path = '/mnt/efs' + directory_path
     try:
         items = os.listdir(directory_path)
         files = []
@@ -85,6 +85,32 @@ def list_files_folders_in_directory(directory_path):
 
 
 @Japi(config={"method": Method.POST})
+def write_file(request: JRequest):
+    try:
+        body = request.get_json()
+        file_path = '/mnt/efs' + body["file_path"]  # Ensure the file path is in the correct location
+
+        # Check if the file exists
+        if not os.path.isfile(file_path):
+            raise JException(f"File {file_path} not found.")
+        if not os.access(file_path, os.R_OK):
+            raise JException(f"File {file_path} is not readable.")
+        
+        with open(file_path, 'w', encoding="utf-8", errors='ignore') as file:
+            file.write(body["content"])
+
+        return {
+            "status": "success"
+        }
+
+    except Exception as e:
+        return {
+            "status": "failed",
+            "err": str(e),
+            "traceback": traceback.format_exc()
+        }
+
+@Japi(config={"method": Method.POST})
 def read_file(request: JRequest):
     try:
         body = request.get_json()
@@ -120,24 +146,15 @@ def read_file(request: JRequest):
             }
         }
 
-        # If the file is human-readable, return the content with info
-        if file_extension in human_readable_extensions:
-            with open(file_path, 'r', encoding="utf-8", errors='ignore') as file:
-                content = file.read()
+        with open(file_path, 'r', encoding="utf-8", errors='ignore') as file:
+            content = file.read()
 
-            return {
-                "status": "success",
-                "readable": True,
-                "file_info": file_info,
-                "content": content
-            }
-        else:
-            # If the file is not human-readable, return file info only
-            return {
-                "status": "success",
-                "readable": False,
-                "file_info": file_info
-            }
+        return {
+            "status": "success",
+            "readable": True,
+            "file_info": file_info,
+            "content": content
+        }
 
     except Exception as e:
         return {
@@ -153,18 +170,27 @@ def delete_file(request: JRequest):
         body = request.get_json()
         file_path = '/mnt/efs/' + body["file_path"]
 
-        # Check if the file exists
-        if not os.path.isfile(file_path):
-            raise JException(f"File {file_path} not found.")
-        if not os.access(file_path, os.W_OK):
-            raise JException(f"File {file_path} is not writable or cannot be deleted.")
+        # Check if the path exists
+        if not os.path.exists(file_path):
+            raise JException(f"Path {file_path} not found.")
 
-        # Delete the file
-        os.remove(file_path)
+        # Check if the path is writable
+        if not os.access(file_path, os.W_OK):
+            raise JException(f"Path {file_path} is not writable or cannot be deleted.")
+
+        # Delete file or directory
+        if os.path.isfile(file_path):
+            os.remove(file_path)
+            message = f"File {body['file_path']} deleted successfully."
+        elif os.path.isdir(file_path):
+            shutil.rmtree(file_path)
+            message = f"Directory {body['file_path']} deleted successfully."
+        else:
+            raise JException(f"{file_path} is not a valid file or directory.")
 
         return {
             "status": "success",
-            "message": f"File {body['file_path']} deleted successfully."
+            "message": message
         }
 
     except Exception as e:
@@ -176,7 +202,31 @@ def delete_file(request: JRequest):
 
 
 @Japi(config={"method": Method.POST})
-def rename_file(request: JRequest):
+def create_new_file(request: JRequest):
+    try:
+        body = request.get_json()
+        file_path = '/mnt/efs/' + body["file_path"]
+
+        # Check if the path exists
+        if os.path.exists(file_path):
+            raise JException(f"Path {file_path} not found.")
+        
+        with open(file_path, 'w', encoding="utf-8", errors='ignore') as file:
+            file.write("")
+
+        return {
+            "status": "success"
+        }
+    except Exception as e:
+        return {
+            "status": "failed",
+            "err": str(e),
+            "traceback": traceback.format_exc()
+        }
+
+
+@Japi(config={"method": Method.POST})
+def rename(request: JRequest):
     try:
         body = request.get_json()
         old_file_path = '/mnt/efs' + body["old_file_path"]  # Old file path (e.g., "/folder/old_name.txt")

@@ -1,0 +1,16 @@
+{
+    "API":{
+        "Load_All_At_Start":false,
+        "Fast_Api_Local_Default_Port":8000
+    },    
+    "Function":{
+        "Base_Url":"https://8z0ymx6opk.execute-api.ap-south-1.amazonaws.com",
+        "Endpoint":"ServerApplication"
+    },
+    "Root":{
+        "Path":"/mnt/efs"
+    },
+    "Databases_Paths":{
+        "Sqlite":"/mnt/efs/databases/sqlite"
+    }
+}

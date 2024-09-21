@@ -37,6 +37,33 @@
       overflow-y: auto;
     }
 
+    .tile-item {
+      min-height: 40px;
+    }
+
+    .folder-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #585353;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: background-color 0.3s, transform 0.3s;
+    }
+
+    .folder-item:hover {
+      background-color: #333;
+      transform: scale(1.02);
+    }
+
+
+    .folder-name {
+      padding-left: 10px;
+      color: #26c6da;
+      font-size: 18px;
+    }
+
     .file-item {
       display: flex;
       justify-content: space-between;
@@ -133,11 +160,12 @@
 <body>
   <div class="top-bar">
     <div class="title">File Manager</div>
+    &nbsp;<span class="title" style="font-size: medium;" id="pathCur"></span>
     
     <div class="button-containerSignOutButton">
-        <button id="uploadFile" class="google-signout-button">
-          <img id="upload_image" alt="Upload Icon" class="google-logo" src="../../Images/upload.png">
-          Upload File
+        <button id="createFile" class="google-signout-button">
+          <!-- <img id="upload_image" alt="Upload Icon" class="google-logo" src="../../Images/upload.png"> -->
+          Create File
         </button>
     </div>
   </div>
