@@ -224,6 +224,24 @@ def create_new_file(request: JRequest):
             "traceback": traceback.format_exc()
         }
 
+@Japi(config={"method": Method.POST})
+def create_new_folder(request: JRequest):
+    try:
+        body = request.get_json()
+        file_path = '/mnt/efs/' + body["file_path"]
+
+        os.makedirs(file_path, exist_ok=True)
+
+        return {
+            "status": "success"
+        }
+    except Exception as e:
+        return {
+            "status": "failed",
+            "err": str(e),
+            "traceback": traceback.format_exc()
+        }
+
 
 @Japi(config={"method": Method.POST})
 def rename(request: JRequest):
@@ -240,8 +258,8 @@ def rename(request: JRequest):
             raise JException("Both the old and new file paths must be in the same directory.")
 
         # Check if the old file exists
-        if not os.path.isfile(old_file_path):
-            raise JException(f"File {old_file_path} not found.")
+        # if not os.path.isfile(old_file_path):
+        #     raise JException(f"File {old_file_path} not found.")
         if not os.access(old_file_path, os.W_OK):
             raise JException(f"File {old_file_path} is not writable or cannot be renamed.")
 
